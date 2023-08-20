@@ -1,0 +1,30 @@
+*{
+  box-sizing: border-box;
+  font-size: 20px;
+}
+button{
+  margin-right: 30px;
+}
+form{
+  margin: auto;
+  padding: 10px;
+  max-width: 1000px;
+  border: 3px solid teal
+}
+label{
+  margin: 0 20px;
+}
+.field-container{
+  margin: 20px auto;
+  max-width: 1000px;
+  display: flex;
+  justify-content: space-between;
+}
+.group-container{
+  max-width: 1000px;
+  margin: 20px auto;
+}
+.btn-group{
+  display: flex;
+  justify-content: center;
+}
