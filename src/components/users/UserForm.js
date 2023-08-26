@@ -1,136 +1,177 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom';
+import { Form, Formik, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 
-import { createUser, updateUser } from '../../store/slices/usersSlice'
+
+import { createUser, updateUser } from '../../store/slices/usersSlice';
 import { emptyUser } from '../../constants';
-import './UserForm.css'
+import './UserForm.css';
 
+// const colors = ['red', 'green', 'black', 'blue',]
 
 function UserForm() {
+	const dispatch = useDispatch();
 
-  const dispatch = useDispatch();
+	const users = useSelector((state) => state.usersList.users);
 
-  const users = useSelector((state) => state.usersList.users);
+	const { id } = useParams();
 
-  const {id} = useParams();
+	const history = useHistory();
 
-  const history = useHistory();
+	const currentUser = users.find((user) => user.id === Number(id));
 
-  const currentUser = users.find(user => user.id === Number(id));
-
-  const [editUser, setEditUser] = useState(
+	/* const [editUser, setEditUser] = useState(
     currentUser ? currentUser : emptyUser
-    );
+    ); */
 
-
-  const onInputChange = (e) => {
+	/* const onInputChange = (e) => {
     setEditUser({
       ...editUser, [e.target.name]: e.target.value
     })
-  }
+  } */
 
-  const goHome = () => history.goBack();
+	const goHome = () => history.goBack();
 
-  const onReset = () => {
-    setEditUser(emptyUser)
-  }
+	const schema = Yup.object().shape({
+		address: Yup.object().shape({
+			city: Yup.string().required('City is required field'),
+			street: Yup.string().required('Street is required field'),
+		}),
+		name: Yup.string()
+			.min(3, 'Too less symbols')
+			.max(15, 'Too many symbols')
+			.required('Name is required field'),
+		email: Yup.string()
+			.email('No valid email')
+			.required('Email is required field'),
+	});
 
-  const onFormSubmit = (e) => {
-    e.preventDefault();
-    !editUser.id
-      ? dispatch(createUser(editUser))
-      : dispatch(updateUser(editUser));
-  }
+	const onFormSubmit = (values, actions) => {
+		// console.log(values);
+		// console.log(actions);
+		// setTimeout(() => {actions.setSubmitting(false)}, 2000)
+		!values.id
+			? dispatch(createUser(values))
+			: dispatch(updateUser(values));
+	};
 
-  return (
-		<form id='users-form' onSubmit={onFormSubmit}>
-			<div className='field-container'>
-				<label>Name</label>
-				<input
-					type='text'
-					name='name'
-					value={editUser.name}
-					onChange={onInputChange}
-				/>
-			</div>
-			<fieldset
-				id='contact'
-				form='users-form'
-				className='group-container'
-			>
-				<legend>Contact</legend>
+	const renderForm = ({isValid, handleReset}) => {
+		// console.log(props)
+		return (
+			<Form id='users-form'>
 				<div className='field-container'>
-					<label htmlFor='email'>Email</label>
-					<input
-						type='email'
+					<label>Name</label>
+					<Field type='text' name='name' />
+				</div>
+				<ErrorMessage name='name'>
+					{(msg) => <div className='error'>{msg}</div>}
+				</ErrorMessage>
+				<fieldset
+					id='contact'
+					form='users-form'
+					className='group-container'
+				>
+					<legend>Contact</legend>
+					<div className='field-container'>
+						<label htmlFor='email'>Email</label>
+						<Field id='email' name='email' placeholder='Email' />
+					</div>
+					<ErrorMessage name='email'>
+						{(msg) => <div className='error'>{msg}</div>}
+					</ErrorMessage>
+					{/* <Field
+						as='select'
 						name='email'
-						value={editUser.email}
-						onChange={onInputChange}
 						placeholder='Email'
-					/>
+						multiple
+					>
+						{colors.map((color) => {
+							return (
+								<option key={color} value={color} multiple>
+									{color}
+								</option>
+							);
+						})}
+					</Field> */}
+					<div className='field-container'>
+						<label htmlFor='phone'>Phone</label>
+						<Field id='phone' name='phone' placeholder='Phone' />
+					</div>
+				</fieldset>
+				<fieldset
+					id='address'
+					form='users-form'
+					className='group-container'
+				>
+					<legend>Address</legend>
+					<div className='field-container'>
+						<label htmlFor='city'>City</label>
+						<Field
+							id='city'
+							name='address.city'
+							placeholder='City'
+						/>
+					</div>
+					<ErrorMessage name='address.city'>
+						{(msg) => <div className='error'>{msg}</div>}
+					</ErrorMessage>
+					<div className='field-container'>
+						<label htmlFor='street'>Street</label>
+						<Field
+							type='text'
+							name='address.street'
+							placeholder='Street'
+						/>
+					</div>
+					<ErrorMessage name='address.street'>
+						{(msg) => <div className='error'>{msg}</div>}
+					</ErrorMessage>
+					<div className='field-container'>
+						<label htmlFor='zipcode'>Zipcode</label>
+						<Field
+							type='text'
+							name='address.zipcode'
+							placeholder='Zipcode'
+						/>
+					</div>
+				</fieldset>
+				<div className='btn-group'>
+					<button
+						type='submit'
+						className='save-btn'
+						disabled={!isValid}
+					>
+						Save
+					</button>
+					<button
+						type='button'
+						className='cancel-btn'
+						onClick={goHome}
+					>
+						Return
+					</button>
+					<button type='reset' /* onClick={handleReset} */>
+						Reset
+					</button>
 				</div>
-				<div className='field-container'>
-					<label htmlFor='phone'>Phone</label>
-					<input
-						type='phone'
-						name='phone'
-						value={editUser.phone}
-						onChange={onInputChange}
-						placeholder='Phone'
-					/>
-				</div>
-			</fieldset>
-			<fieldset
-				id='address'
-				form='users-form'
-				className='group-container'
-			>
-				<legend>Address</legend>
-				<div className='field-container'>
-					<label htmlFor='city'>City</label>
-					<input
-						type='city'
-						name='city'
-						value={editUser.address.city}
-						onChange={onInputChange}
-						placeholder='City'
-					/>
-				</div>
-				<div className='field-container'>
-					<label htmlFor='street'>Street</label>
-					<input
-						type='street'
-						name='street'
-						value={editUser.address.street}
-						onChange={onInputChange}
-						placeholder='Street'
-					/>
-				</div>
-				<div className='field-container'>
-					<label htmlFor='zipcode'>Zipcode</label>
-					<input
-						type='zipcode'
-						name='zipcode'
-						value={editUser.address.zipcode}
-						onChange={onInputChange}
-						placeholder='Zipcode'
-					/>
-				</div>
-			</fieldset>
-			<div className='btn-group'>
-				<button type='submit' className='save-btn'>
-					Save
-				</button>
-				<button type='button' className='cancel-btn' onClick={goHome}>
-					Return
-				</button>
-				<button type='button' onClick={onReset}>
-					Reset
-				</button>
-			</div>
-		</form>
-  );
+			</Form>
+		);
+	};
+
+	return (
+		<Formik
+			initialValues={currentUser ? currentUser : emptyUser}
+			onSubmit={onFormSubmit}
+			validationSchema={schema}
+			// validate={()=>{}}
+		>
+			{renderForm}
+		</Formik>
+	);
 }
 
-export default UserForm
+export default UserForm;
