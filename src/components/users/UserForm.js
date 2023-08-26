@@ -5,6 +5,10 @@ import { Form, Formik, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import SaveIcon from '@mui/icons-material/Save';
+import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
+import ClearIcon from '@mui/icons-material/Clear';
+import { TextField } from '@mui/material';
 
 
 import { createUser, updateUser } from '../../store/slices/usersSlice';
@@ -65,7 +69,14 @@ function UserForm() {
 			<Form id='users-form'>
 				<div className='field-container'>
 					<label>Name</label>
-					<Field type='text' name='name' />
+					<Field 
+						as={TextField}
+						id='name'
+						type='text' 
+						name='name' 
+						sx={{ width: 200}}
+
+						/>
 				</div>
 				<ErrorMessage name='name'>
 					{(msg) => <div className='error'>{msg}</div>}
@@ -139,7 +150,36 @@ function UserForm() {
 						/>
 					</div>
 				</fieldset>
-				<div className='btn-group'>
+				<Stack direction='row' justifyContent='center' spacing={12}>
+					<Button
+						variant='contained'
+						type='submit'
+						disabled={!isValid}
+						size='large'
+						startIcon={<SaveIcon />}
+					>
+						Save
+					</Button>
+					<Button
+						variant='contained'
+						type='button'
+						size='large'
+						startIcon={<KeyboardReturnIcon />}
+						onClick={goHome}
+					>
+						Return
+					</Button>
+					<Button
+						variant='contained'
+						type='reset'
+						size='large'
+						startIcon={<ClearIcon />}
+						style={{ backgroundColor: 'teal' }}
+					>
+						Reset
+					</Button>
+				</Stack>
+				{/* <div className='btn-group'>
 					<button
 						type='submit'
 						className='save-btn'
@@ -154,10 +194,10 @@ function UserForm() {
 					>
 						Return
 					</button>
-					<button type='reset' /* onClick={handleReset} */>
+					<button type='reset' onClick={handleReset}>
 						Reset
 					</button>
-				</div>
+				</div> */}
 			</Form>
 		);
 	};
@@ -167,7 +207,6 @@ function UserForm() {
 			initialValues={currentUser ? currentUser : emptyUser}
 			onSubmit={onFormSubmit}
 			validationSchema={schema}
-			// validate={()=>{}}
 		>
 			{renderForm}
 		</Formik>
