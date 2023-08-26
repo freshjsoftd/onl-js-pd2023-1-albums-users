@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useRouteMatch } from 'react-router-dom';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ModeIcon from '@mui/icons-material/Mode';
 
 import { getAllUsers, deleteUser } from '../../store/slices/usersSlice';
 import './UsersList.css';
@@ -27,13 +29,15 @@ function UsersList() {
 							</p>
 						</Link>
 						<Link to={`${url}/add/${user.id}`}>
-							<p>Edit</p>
+							<p id='edit'>
+								<ModeIcon />
+							</p>
 						</Link>
 						<p
 							id='del'
 							onClick={() => dispatch(deleteUser(user.id))}
 						>
-							Del
+							<DeleteIcon />
 						</p>
 					</li>
 				);
