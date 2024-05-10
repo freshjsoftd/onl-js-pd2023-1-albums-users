@@ -25,6 +25,7 @@ function UserForm() {
 	const { id } = useParams();
 
 	const history = useHistory();
+	console.log(history)
 
 	const currentUser = users.find((user) => user.id === Number(id));
 

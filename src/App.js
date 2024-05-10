@@ -20,7 +20,7 @@ import Albums from './components/albums/Albums';
 import Users from './components/users/Users';
 
 function App() {
-  return (
+	return (
 		<Router>
 			<Box sx={{ flexGrow: 1 }}>
 				<AppBar position='static'>
@@ -60,6 +60,11 @@ function App() {
 					<li>
 						<Link to='/'>Home</Link>
 					</li>
+					<li>
+						<a href='/albums'>
+							Test
+						</a>
+					</li>
 				</ul>
 			</div>
 			<Switch>
@@ -73,9 +78,11 @@ function App() {
 				<Route path='*'>
 					<Redirect to='/users' />
 				</Route>
+				{/* <Redirect from='*' to='/users' /> */}
+				{/* <Redirect path='*' to='/users' /> */}
 			</Switch>
 		</Router>
-  );
+	);
 }
 
 export default App;
