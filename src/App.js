@@ -60,11 +60,6 @@ function App() {
 					<li>
 						<Link to='/'>Home</Link>
 					</li>
-					<li>
-						<a href='/albums'>
-							Test
-						</a>
-					</li>
 				</ul>
 			</div>
 			<Switch>
