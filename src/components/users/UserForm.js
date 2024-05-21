@@ -75,7 +75,7 @@ function UserForm() {
 						id='name'
 						type='text' 
 						name='name' 
-						sx={{ width: 200}}
+						sx={{ width: 500}}
 
 						/>
 				</div>
